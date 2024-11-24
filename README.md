@@ -21,3 +21,7 @@
 - resultMap标签使用
 - 对一
 - 对多
+## 05. 动态sql
+- if标签和where标签的
+- set标签
+- foreach标签
