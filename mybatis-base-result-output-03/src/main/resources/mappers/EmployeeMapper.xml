@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!-- namespace等于mapper接口类的全限定名,这样实现对应 -->
+<mapper namespace="com.zazhi.mapper.EmployeeMapper">
+
+    <!-- DML不需要指定返回类型 -->
+    <delete id="deleteById">
+        delete from t_emp where id = #{id}
+    </delete>
+
+    <!--
+        1. 返回简单类型, 用resultType指定, resultType等于简单类型的全限定名 或 别名(mybatis指定或在mybatis-config.xml中自定义)
+        resultType="java.lang.String" 或者 resultType="string"
+    -->
+    <select id="selectNameById" resultType="java.lang.String">
+        select name from t_emp where id = #{id}
+    </select>
+
+    <!--
+        2. 返回实体类型, 用resultType指定, resultType等于实体类型的全限定名 或 别名(mybatis指定或在mybatis-config.xml中自定义)
+        resultType="com.zazhi.entity.Employee" 或者 resultType="employee"
+        注意: 查询出的列名需要和实体类的属性名一致, 如果开启了驼峰映射, 列名下划线分割的会转换为驼峰命名
+    -->
+    <select id="selectById" resultType="com.zazhi.pojo.Employee">
+        select emp_id, emp_name, emp_salary from t_emp where id = #{id}
+    </select>
+
+    <!--
+        3. 返回Map类型, 用resultType指定, resultType等于map
+        注意: 查询出的列名会作为map的key, 查询出的值会作为map的value
+      -->
+    <select id="selectEmpNameAndMaxSalary" resultType="map">
+        SELECT
+        emp_name 员工姓名,
+        emp_salary 员工工资,
+        (SELECT AVG(emp_salary) FROM t_emp) 部门平均工资
+        FROM t_emp WHERE emp_salary=(
+        SELECT MAX(emp_salary) FROM t_emp
+        )
+    </select>
+
+    <!--
+        4. 返回List类型, 用resultType指定, resultType等于集合中的泛型的全限定名 或 别名(mybatis指定或在mybatis-config.xml中自定义)
+        注意: resultType指定的泛型即可
+    -->
+    <select id="selectAllEmpName" resultType="com.zazhi.pojo.Employee">
+        SELECT emp_name FROM t_emp
+    </select>
+
+    <!--
+        5. 主键回显
+            1. 自动增长主键回显
+               useGeneratedKeys="true": 表示使用自动生成的主键
+               keyColumn="id": 表示主键列名
+               keyProperty="id": 表示实体类中的属性名
+    -->
+    <insert id="insertEmp" useGeneratedKeys="true" keyColumn="emp_id" keyProperty="empId">
+        insert into t_emp(emp_name, emp_salary) values(#{empName}, #{empSalary})
+    </insert>
+
+
+</mapper>
