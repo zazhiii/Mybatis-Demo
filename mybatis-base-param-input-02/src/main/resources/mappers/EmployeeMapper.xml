@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zazhi.mapper.EmployeeMapper">
+
+    <!--
+        后面是问号占位符
+        ==>  Preparing: select emp_id empId,emp_name empName, emp_salary empSalary from t_emp where emp_id = ?
+        ==> Parameters: 1(Integer)
+    -->
+    <!--    <select id="selectEmployee" resultType="com.zazhi.pojo.Employee">-->
+    <!--        select-->
+    <!--            emp_id empId,emp_name empName, emp_salary empSalary-->
+    <!--        from-->
+    <!--            t_emp-->
+    <!--        where-->
+    <!--            emp_id = #{empId}-->
+    <!--    </select>-->
+
+    <!--
+        ${}直接拼接参数
+        ==>  Preparing: select emp_id empId,emp_name empName, emp_salary empSalary from t_emp where emp_id = 1
+        ==> Parameters:
+    -->
+    <select id="selectEmployee" resultType="com.zazhi.pojo.Employee">
+        select
+        emp_id empId,emp_name empName, emp_salary empSalary
+        from
+        t_emp
+        where
+        emp_id = ${empId}
+    </select>
+
+    <!--
+        1. 传入单个简单类型参数 #{ key } key随便写都可以取到，但推荐用参数名
+    -->
+    <delete id="deleteEmployee">
+        delete from t_emp where emp_id = #{empId}
+    </delete>
+
+    <!--
+        2. 传入实体类参数 #{ key } key是实体类的属性名
+    -->
+    <insert id="insertEmployee" parameterType="com.zazhi.pojo.Employee">
+        insert into t_emp(emp_id, emp_name, emp_salary) values(#{empId}, #{empName}, #{empSalary})
+    </insert>
+
+    <!--
+        3. 传入多个简单类型参数，
+            1. 在接口方法上使用@Param注解指定参数名，#{ key } key是@Param注解指定的参数名
+            2. 使用arg0, arg1, arg2, ... 代表参数位置
+            3. 使用param1, param2, param3, ... 代表参数位置
+    -->
+    <select id="queryEmployeeByNameAndSalary" resultType="com.zazhi.pojo.Employee">
+        select
+        emp_id empId,emp_name empName, emp_salary empSalary
+        from
+        t_emp
+        where
+        emp_name = #{a} and emp_salary = #{b}
+<!--        emp_name = #{arg0} and emp_salary = #{arg1}-->
+<!--        emp_name = #{param1} and emp_salary = #{param2}-->
+    </select>
+
+    <!--
+        4. 传入Map类型参数 #{ key } key是Map的key
+    -->
+    <insert id="insertEmployeeByMap" parameterType="com.zazhi.pojo.Employee">
+        insert into t_emp(emp_id, emp_name, emp_salary) values(#{empId}, #{empName}, #{empSalary})
+    </insert>
+
+</mapper>
